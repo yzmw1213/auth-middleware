@@ -1,0 +1,62 @@
+name: Go build, test
+on:
+  push:
+    branches:
+      - '*'
+    tags-ignore:
+      - 'v*'
+  pull_request:
+    branches:
+      - '*'
+    tags-ignore:
+      - 'v*'
+
+jobs:
+  build_test:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Set up
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.18.2
+
+      - name: Check out
+        uses: actions/checkout@v3
+      - name: SSH Setting
+        env:
+          TOKEN: ${{ secrets.SUBMODULE_DEPLOY_TOKEN }}
+        run: |
+          mkdir -p /home/runner/.ssh/
+          echo -e "$TOKEN" > /home/runner/.ssh/id_rsa
+          chmod 600 /home/runner/.ssh/id_rsa
+      # https://github.com/actions/checkout#checkout-submodules
+      - name: go mod
+        run: |
+          export GO111MODULE=on
+          export GOPATH=`pwd`
+          cd src && go mod download
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Build
+        run: cd src && go build
+
+      - name: "Run CI"
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v1
+            with:
+          fetch-depth: 1
+          - uses: dominikh/staticcheck-action@v1.2.0
+            with:
+          version: "2022.1.1"
+
+#      - name: Test
+#        run: cd src && go test -v
+
