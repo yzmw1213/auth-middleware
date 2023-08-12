@@ -1,19 +1,14 @@
 package main
 
 import (
-	"flag"
-	"net/http"
+	"github.com/gin-gonic/gin"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/yzmw1213/demo-api/route"
 )
 
 func main() {
-	addr := flag.String("addr", ":9090", "アプリケーションのアドレス")
+	router := gin.Default()
 
-	route.IndexRoute()
-	log.Infof("Web server start port:[%s]", *addr)
-	if err := http.ListenAndServe(*addr, nil); err != nil {
-		log.Errorf("Error http.ListenAndServe %v", err)
-	}
+	route.IndexRoute(router)
+	router.Run(":9090")
 }

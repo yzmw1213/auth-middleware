@@ -1,7 +1,7 @@
 package handle
 
 import (
-	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
@@ -16,21 +16,15 @@ func NewIndexHandler() *IndexHandler {
 	return &IndexHandler{}
 }
 
-func (h *IndexHandler) IndexHandler(w http.ResponseWriter, r *http.Request) {
+func (h *IndexHandler) IndexHandler(c *gin.Context) {
 	log.Infof("IndexHandler start")
 	res := &util.OutputBasic{
 		Code: http.StatusOK,
 		Result: "OK",
 		Message: "OK" ,
 	}
-
-	output, err := json.Marshal(res.GetResult())
-
-	if err != nil {
-		http.Error(w, "JSONの生成に失敗しました。", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(output)
+	c.JSON(
+		res.GetCode(),
+		res.GetResult(),
+	)
 }
