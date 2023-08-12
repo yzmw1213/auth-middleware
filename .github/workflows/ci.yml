@@ -48,10 +48,8 @@ jobs:
         run: cd src && go build
 
       - name: "Run CI"
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v1
-            with:
+        uses: actions/checkout@v3
+        with:
           fetch-depth: 1
           - uses: dominikh/staticcheck-action@v1.2.0
             with:
