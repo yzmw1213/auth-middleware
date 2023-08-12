@@ -1,14 +1,13 @@
 package route
 
 import (
-	"net/http"
-
+	"github.com/gin-gonic/gin"
 	"github.com/yzmw1213/demo-api/handle"
 )
 
 
 
-func IndexRoute() {
+func IndexRoute(router *gin.Engine) {
 	indexHandler := handle.NewIndexHandler()
-	http.HandleFunc("/", indexHandler.IndexHandler)
+	router.GET("/", indexHandler.IndexHandler)
 }
