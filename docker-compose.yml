@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile.dev
       args:
         - GO_MODULE_NAME=github.com/yzmw1213/demo-api
+        - FIREBASE_KEY_FILE_JSON=/app/creds/firebase_service_account.json
     ports:
       - 9090:9090
     working_dir: /app/src
