@@ -17,6 +17,8 @@ services:
     environment:
       - GO111MODULE=on
       - PORT=${PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
@@ -26,6 +28,8 @@ services:
     container_name: mysql_host
     ports:
       - "3306:3306"
+    expose:
+      - "3306"
     volumes:
       - "./dev/my.conf:/etc/mysql/my.conf"
       - "./dev/initdb.d/:/docker-entrypoint-initdb.d/"

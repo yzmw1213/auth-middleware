@@ -6,10 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/yzmw1213/demo-api/dao"
 	"github.com/yzmw1213/demo-api/route"
 )
 
 func main() {
+	dao.InitMysql()
+
 	router := gin.Default()
 	port := os.Getenv("PORT")
 	if port == "" {
