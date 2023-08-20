@@ -13,6 +13,13 @@ import (
 var db *sql.DB
 var initedDB = false
 
+func DB() *sql.DB {
+	if !initedDB {
+		InitMysql()
+	}
+	return db
+}
+
 func InitMysql() {
 	log.Infof("InitMysql")
 	var err error
