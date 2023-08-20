@@ -28,6 +28,7 @@ services:
       - "3306:3306"
     volumes:
       - "./dev/my.conf:/etc/mysql/my.conf"
+      - "./dev/initdb.d/:/docker-entrypoint-initdb.d/"
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
@@ -35,5 +36,5 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+#      MYSQL_USER: ${DB_USER}
+#      MYSQL_PASSWORD: ${DB_PASSWORD}
