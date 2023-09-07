@@ -1,9 +1,9 @@
 package handle
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/yzmw1213/demo-api/util"
@@ -18,10 +18,12 @@ func NewIndexHandler() *IndexHandler {
 
 func (h *IndexHandler) IndexHandler(c *gin.Context) {
 	log.Infof("IndexHandler start")
+	name, _ := c.Get("user_name")
+	log.Infof("name: %s", name.(string))
 	res := &util.OutputBasic{
-		Code: http.StatusOK,
-		Result: "OK",
-		Message: "OK" ,
+		Code:    http.StatusOK,
+		Result:  "OK",
+		Message: "OK",
 	}
 	c.JSON(
 		res.GetCode(),
