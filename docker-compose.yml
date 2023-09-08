@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  app:
+    container_name: auth-middleware
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        - GO_MODULE_NAME=github.com/yzmw1213/demo-api
+    ports:
+      - 9090:9090
+    working_dir: /app/src
+    volumes:
+      - ./:/app
+    environment:
+      - GO111MODULE=on
+      - PORT=${PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - FIREBASE_KEY_FILE_JSON=/app/creds/firebase_service_account.json
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "go run main.go"
+  db:
+    image: mysql:8.0
+    container_name: mysql_host
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - "./dev/my.conf:/etc/mysql/my.conf"
+      - "./dev/initdb.d/:/docker-entrypoint-initdb.d/"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+#      MYSQL_USER: ${DB_USER}
+#      MYSQL_PASSWORD: ${DB_PASSWORD}
