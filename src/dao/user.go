@@ -30,7 +30,9 @@ SELECT
 	uu.name,
 	uu.email,
 	uu.firebase_uid,
-	uu.delete_flag
+	uu.delete_flag,
+	uu.created,
+	uu.updated
 FROM
 	user_db.users uu
 WHERE
@@ -81,6 +83,8 @@ WHERE
 			&row.Email,
 			&row.FirebaseUID,
 			&row.DeleteFlag,
+			&row.Created,
+			&row.Updated,
 		); e != nil {
 			list = []*entity.User{}
 			err = e
