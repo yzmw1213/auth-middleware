@@ -1,7 +1,8 @@
 DROP SCHEMA IF EXISTS user_db;
 CREATE SCHEMA user_db;
 
-CREATE USER 'yzmw1213'@'%' IDENTIFIED BY 'fga%45ng2eBj9d';
+-- 既存の場合、CREATEできない
+CREATE USER IF NOT EXISTS 'yzmw1213'@'%' IDENTIFIED BY 'fga%45ng2eBj9d';
 GRANT ALL ON user_db.* TO 'yzmw1213'@'%';
 
 DROP TABLE IF EXISTS user_db.users;
