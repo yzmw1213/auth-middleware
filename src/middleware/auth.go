@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/yzmw1213/demo-api/conf"
 	"github.com/yzmw1213/demo-api/dao"
 	"github.com/yzmw1213/demo-api/entity"
 
@@ -42,7 +41,6 @@ func AuthAPI(next gin.HandlerFunc, authorities []string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		log.Infof("Claim %#v", token.Claims)
 
 		uid := token.Claims["user_id"]
 		if uid.(string) == "" {
