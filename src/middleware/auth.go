@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/yzmw1213/demo-api/dao"
-	"github.com/yzmw1213/demo-api/entity"
-
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/yzmw1213/demo-api/conf"
+	"github.com/yzmw1213/demo-api/dao"
+	"github.com/yzmw1213/demo-api/entity"
 )
 
 func AuthAPI(next gin.HandlerFunc, authorities []string) gin.HandlerFunc {
