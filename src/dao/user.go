@@ -120,6 +120,36 @@ WHERE
 	return
 }
 
+func (d *UserDao) GetByEmail(tx *sql.Tx, in *entity.User) (userId int64, err error) {
+	log.Infof("UserDao.GetByEmail %v", in)
+	query := `
+SELECT
+	user_id
+FROM
+	user_db.users
+WHERE
+	email = ? 
+`
+	params := []interface{}{
+		in.Email,
+	}
+	log.Infof("query:%s params:%v", query, params)
+	if tx != nil {
+		err = tx.QueryRow(query, params...).Scan(&userId)
+	} else {
+		err = d.db.QueryRow(query, params...).Scan(&userId)
+	}
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+		} else {
+			log.Errorf("Error Query %v", err)
+		}
+		return
+	}
+	return
+}
+
 func (d *UserDao) getWhere(in *entity.User) (params []interface{}, whereString []string) {
 	params = append(params, in.DeleteFlag)
 	if in.UserID > 0 {
@@ -149,7 +179,7 @@ func (d *UserDao) GetDisable(tx *sql.Tx, in *entity.User, limit, offset int64) (
 	return d.Get(tx, in, limit, offset)
 }
 
-func (d *UserDao) Save(tx *sql.Tx, in *entity.User) (err error) {
+func (d *UserDao) Save(tx *sql.Tx, in *entity.User) (insertedId int64, err error) {
 	log.Infof("UserDao.Save %v", in)
 
 	query := `
@@ -158,14 +188,14 @@ INSERT INTO user_db.users
 	name,
 	email,
 	firebase_uid,
-	create_user_id
-) VALUES (?,?,?,?,?)
+	update_user_id
+) VALUES (?,?,?,?)
 `
 	params := []interface{}{
 		in.Name,
 		in.Email,
 		in.FirebaseUID,
-		in.CreateUserID,
+		in.UpdateUserID,
 	}
 	log.Infof("query: %v param: %v", query, params)
 
@@ -181,6 +211,11 @@ INSERT INTO user_db.users
 		return
 	}
 	id, err := result.LastInsertId()
+	if err != nil {
+		log.Errorf("error LastInsertId %v", err)
+		return
+	}
 	log.Infof("Inserted ID user %d", id)
+	insertedId = id
 	return
 }

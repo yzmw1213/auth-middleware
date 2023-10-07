@@ -83,6 +83,10 @@ func (o *OutputBasicObject) GetCode() int {
 	return o.Code
 }
 
+func (o *OutputBasicObject) GetError() error {
+	return nil
+}
+
 type OutputBasicListPaging struct {
 	Code        int          // コード
 	Result      string       // 結果

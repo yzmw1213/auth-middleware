@@ -1,6 +1,8 @@
 package handle
 
 import (
+	"errors"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
@@ -35,19 +37,28 @@ func (h *ClientUserHandler) GetHandle(c *gin.Context) {
 	)
 }
 
-//func (h *UserHandler) SaveHandle(c *gin.Context) {
-//	log.Infof("SaveHandle start")
-//	name, _ := c.Get("user_name")
-//	userID, _ := c.Get("user_id")
-//	log.Infof("user_id: %d,name: %s", userID.(int64), name.(string))
-//
-//	var in service.InputGetUser
-//	if err := c.ShouldBind(in); err != nil {
-//		util.BadRequestJson(*c, err)
-//	}
-//	out := h.userService.GetUser(&in)
-//	c.JSON(
-//		out.GetCode(),
-//		out.GetResult(),
-//	)
-//}
+func (h *ClientUserHandler) SaveHandle(c *gin.Context) {
+	log.Infof("SaveHandle start")
+	name, _ := c.Get("user_name")
+	userID, _ := c.Get("user_id")
+	log.Infof("user_id: %d,name: %s", userID.(int64), name.(string))
+
+	in := &service.InputSaveClientUser{}
+	if err := c.Bind(in); err != nil {
+		util.BadRequestJson(*c, err)
+		return
+	}
+	in.UpdateUserID = userID.(int64)
+	// TODO バリデーションツールを入れる
+	if in.Email == "" || in.Name == "" || in.Password == "" {
+		log.Warn("invalid input")
+		util.BadRequestJson(*c, errors.New("invalid input"))
+		return
+	}
+
+	out := h.clientUserService.Save(in)
+	c.JSON(
+		out.GetCode(),
+		out.GetResult(),
+	)
+}

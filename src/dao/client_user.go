@@ -171,3 +171,39 @@ func (d *ClientUserDao) GetDisable(tx *sql.Tx, in *entity.ClientUser, limit, off
 	in.DeleteFlag = conf.DeleteFlagON
 	return d.Get(tx, in, limit, offset)
 }
+
+func (d *ClientUserDao) Save(tx *sql.Tx, in *entity.ClientUser) (id int64, err error) {
+	log.Infof("ClientUserDao.Save %v", in)
+
+	query := `
+INSERT INTO client_db.client_users
+(
+	user_id,
+ 	create_user_id,
+	update_user_id
+) VALUES (?,?,?)
+ON DUPLICATE KEY UPDATE
+	create_user_id = VALUES(create_user_id),
+	update_user_id = VALUES(update_user_id)	                   
+`
+	params := []interface{}{
+		in.UserID,
+		in.CreateUserID,
+		in.UpdateUserID,
+	}
+	log.Infof("query: %v param: %v", query, params)
+
+	var result sql.Result
+
+	if tx != nil {
+		result, err = tx.Exec(query, params...)
+	} else {
+		result, err = d.db.Exec(query, params...)
+	}
+	if err != nil {
+		log.Errorf("error query %v", err)
+		return
+	}
+	id, err = result.LastInsertId()
+	return
+}

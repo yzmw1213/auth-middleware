@@ -17,4 +17,5 @@ func IndexRoute(router *gin.Engine) {
 
 	// client user
 	router.GET("/client/user", middleware.AuthAPI(clientUserHandler.GetHandle, authorityAdmin))
+	router.POST("/client/user", middleware.AuthAPI(clientUserHandler.SaveHandle, authorityAdmin))
 }
