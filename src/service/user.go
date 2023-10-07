@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
+
 	"github.com/yzmw1213/demo-api/dao"
 	"github.com/yzmw1213/demo-api/entity"
 	"github.com/yzmw1213/demo-api/util"
@@ -29,6 +30,17 @@ type InputGetUser struct {
 	Offset      int64  `json:"-"`
 }
 
+func (in *InputGetUser) GetParam() *InputGetUser {
+	if in.Limit <= 0 {
+		in.Limit = 1000
+	}
+	if in.Page <= 1 {
+		in.Page = 1
+	}
+	in.Offset = (in.Page - 1) * in.Limit
+	return in
+}
+
 func (s *UserService) GetUser(in *InputGetUser) util.OutputBasicInterface {
 	log.Info("GetUser start %#v", in)
 	count, err := s.userDao.GetCount(nil, &entity.User{
@@ -51,7 +63,7 @@ func (s *UserService) GetUser(in *InputGetUser) util.OutputBasicInterface {
 		Name:        in.Name,
 		Email:       in.Email,
 		FirebaseUID: in.FirebaseUID,
-	})
+	}, in.Limit, in.Offset)
 
 	if err != nil {
 		return &util.OutputBasic{

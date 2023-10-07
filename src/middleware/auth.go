@@ -57,7 +57,7 @@ func AuthAPI(next gin.HandlerFunc, authorities []string) gin.HandlerFunc {
 
 		userList, err := dao.NewUserDao().GetEnable(nil, &entity.User{
 			FirebaseUID: uid.(string),
-		})
+		}, 1, 0)
 		if err != nil {
 			log.Errorf("Error User Get %v", err)
 			c.JSON(http.StatusUnauthorized, map[string]interface{}{

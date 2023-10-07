@@ -1,12 +1,11 @@
 package handle
 
 import (
-	"github.com/yzmw1213/demo-api/util"
-
-	"github.com/yzmw1213/demo-api/service"
-
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/yzmw1213/demo-api/service"
+	"github.com/yzmw1213/demo-api/util"
 )
 
 type UserHandler struct {
@@ -29,7 +28,7 @@ func (h *UserHandler) GetHandle(c *gin.Context) {
 	if err := c.ShouldBind(in); err != nil {
 		util.BadRequestJson(*c, err)
 	}
-	out := h.userService.GetUser(&in)
+	out := h.userService.GetUser(in.GetParam())
 	c.JSON(
 		out.GetCode(),
 		out.GetResult(),

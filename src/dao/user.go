@@ -53,7 +53,7 @@ WHERE
 	return
 }
 
-func (d *UserDao) Get(tx *sql.Tx, in *entity.User) (list []*entity.User, err error) {
+func (d *UserDao) Get(tx *sql.Tx, in *entity.User, limit, offset int64) (list []*entity.User, err error) {
 	log.Infof("UserDao.Get %v", in)
 	query := `
 SELECT
@@ -74,10 +74,13 @@ WHERE
 	if len(whereString) > 0 {
 		query += " AND " + strings.Join(whereString, " AND ")
 	}
+	query += ` ORDER BY uu.user_id DESC `
+	query += ` LIMIT ?,?`
+	params = append(params, offset)
+	params = append(params, limit)
+
 	log.Infof("query:%s params:%v", query, params)
-
 	var rows *sql.Rows
-
 	if tx != nil {
 		rows, err = tx.Query(query, params...)
 	} else {
@@ -135,16 +138,16 @@ func (d *UserDao) getWhere(in *entity.User) (params []interface{}, whereString [
 	return
 }
 
-func (d *UserDao) GetEnable(tx *sql.Tx, in *entity.User) (list []*entity.User, err error) {
+func (d *UserDao) GetEnable(tx *sql.Tx, in *entity.User, limit, offset int64) (list []*entity.User, err error) {
 	log.Infof("UserDao.GetEnable %v", in)
 	in.DeleteFlag = conf.DeleteFlagOFF
-	return d.Get(tx, in)
+	return d.Get(tx, in, limit, offset)
 }
 
-func (d *UserDao) GetDisable(tx *sql.Tx, in *entity.User) (list []*entity.User, err error) {
+func (d *UserDao) GetDisable(tx *sql.Tx, in *entity.User, limit, offset int64) (list []*entity.User, err error) {
 	log.Infof("UserDao.GetDisable %v", in)
 	in.DeleteFlag = conf.DeleteFlagON
-	return d.Get(tx, in)
+	return d.Get(tx, in, limit, offset)
 }
 
 func (d *UserDao) Save(tx *sql.Tx, in *entity.User) (err error) {
