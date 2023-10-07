@@ -9,12 +9,12 @@ import (
 
 func IndexRoute(router *gin.Engine) {
 	indexHandler := handle.NewIndexHandler()
-	userHandler := handle.NewUserHandler()
+	clientUserHandler := handle.NewClientUserHandler()
 
 	authorityClient := []string{conf.CustomUserClaimClient}
 	authorityAdmin := []string{conf.CustomUserClaimAdmin}
 	router.GET("/", middleware.AuthAPI(indexHandler.IndexHandler, authorityClient))
 
-	// user
-	router.GET("/user", middleware.AuthAPI(userHandler.GetHandle, authorityAdmin))
+	// client user
+	router.GET("/client/user", middleware.AuthAPI(clientUserHandler.GetHandle, authorityAdmin))
 }

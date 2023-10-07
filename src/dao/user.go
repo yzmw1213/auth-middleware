@@ -4,11 +4,10 @@ import (
 	"database/sql"
 	"strings"
 
-	"github.com/yzmw1213/demo-api/conf"
-
 	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/yzmw1213/demo-api/conf"
 	"github.com/yzmw1213/demo-api/entity"
 )
 
