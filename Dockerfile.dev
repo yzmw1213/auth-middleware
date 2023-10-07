@@ -8,3 +8,5 @@ RUN go mod init github.com/yzmw1213/demo-api
 ENV ENV development
 
 RUN go install github.com/cosmtrek/air@v1.44.0
+
+RUN go mod download
