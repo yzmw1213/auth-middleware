@@ -84,28 +84,34 @@ func (o *OutputBasicObject) GetCode() int {
 }
 
 type OutputBasicListPaging struct {
-	Code       int          // コード
-	Result     string       // 結果
-	List       *interface{} // 結果オブジェクト配列
-	CountTotal int64        // 総数
-	Page       int64        // ページ番号
-	Limit      int64        // 検索数
+	Code        int          // コード
+	Result      string       // 結果
+	List        *interface{} // 結果オブジェクト配列
+	CountTotal  int64        // 総数
+	CountResult int64        // 取得数
+	Page        int64        // ページ番号
+	Limit       int64        // 検索数
 }
 
-func NewOutputBasicListPaging(row interface{}) *OutputBasicListPaging {
+func NewOutputBasicListPaging(list interface{}, totalCount, resultCount, page, limit int64) *OutputBasicListPaging {
 	return &OutputBasicListPaging{
-		List: &row,
+		List:        &list,
+		CountTotal:  totalCount,
+		CountResult: resultCount,
+		Page:        page,
+		Limit:       limit,
 	}
 }
 
 func (o *OutputBasicListPaging) GetResult() map[string]interface{} {
 	return map[string]interface{}{
-		"code":        http.StatusOK,
-		"result":      "OK",
-		"list":        o.List,
-		"count_total": o.CountTotal,
-		"page":        o.Page,
-		"limit":       o.Limit,
+		"code":         http.StatusOK,
+		"result":       "OK",
+		"list":         o.List,
+		"count_total":  o.CountTotal,
+		"count_result": o.CountResult,
+		"page":         o.Page,
+		"limit":        o.Limit,
 	}
 }
 

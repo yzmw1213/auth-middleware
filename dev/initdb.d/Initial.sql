@@ -22,4 +22,4 @@ CREATE TABLE user_db.users
     UNIQUE KEY `uk_uu_1` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='ユーザー';
 
-INSERT INTO user_db.users (name, email, firebase_uid) VALUES ('default@example.co.jp', 'default user', 'Y243jnTMQSOz7Pjkfgha5Vffcpl2');
+INSERT INTO user_db.users (name, email, firebase_uid) VALUES ('default user', 'default@example.co.jp', 'Y243jnTMQSOz7Pjkfgha5Vffcpl2');
