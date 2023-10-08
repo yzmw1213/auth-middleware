@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-
-	"github.com/yzmw1213/demo-api/conf"
+	"strconv"
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/yzmw1213/demo-api/conf"
 	"github.com/yzmw1213/demo-api/dao"
 	"github.com/yzmw1213/demo-api/entity"
 	"github.com/yzmw1213/demo-api/util"
@@ -197,4 +197,27 @@ func (s *ClientUserService) txSave(tx *sql.Tx, in *InputSaveClientUser) util.Out
 		}
 	}
 	return util.NewOutputBasicObject(interface{}(list[0]))
+}
+
+func (s *ClientUserService) GetClientListCSV(in *InputGetClientUser) (list [][]string, err error) {
+	log.Infof("GetClientListCSV %v", in)
+	uList, err := s.clientUserDao.GetEnable(nil, &entity.ClientUser{
+		UserID:      in.UserID,
+		Name:        in.Name,
+		Email:       in.Email,
+		FirebaseUID: in.FirebaseUID,
+	}, in.Limit, in.Offset)
+	if err != nil {
+		log.Errorf("Error clientUserDao.GetEnable %v", err)
+		return
+	}
+	list = append(list, []string{"ID", "名前", "メールアドレス"})
+	for _, row := range uList {
+		var strs []string
+		strs = append(strs, strconv.FormatInt(row.ClientUserID, 10))
+		strs = append(strs, row.Name)
+		strs = append(strs, row.Email)
+		list = append(list, strs)
+	}
+	return
 }
