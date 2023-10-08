@@ -17,5 +17,6 @@ func IndexRoute(router *gin.Engine) {
 
 	// client user
 	router.GET("/client/user", middleware.AuthAPI(clientUserHandler.GetHandle, authorityAdmin))
+	router.GET("/client/user/csv", middleware.AuthAPI(clientUserHandler.DownloadClientUserCsvHandle, authorityAdmin))
 	router.POST("/client/user", middleware.AuthAPI(clientUserHandler.SaveHandle, authorityAdmin))
 }
